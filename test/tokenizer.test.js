@@ -32,4 +32,33 @@ describe('tokenizer', () => {
     const translated = masked.replace('', ' ')
     expect(restore(translated, tokens)).toContain('[qt]quote[/qt]')
   })
+
+  it('protects a Chatwork [rp] reply tag (space-attribute syntax)', () => {
+    const { masked, tokens } = protect('[rp aid=123 to=456-789] hello')
+    expect(masked).not.toContain('[rp aid')
+    expect(tokens.length).toBe(1)
+    expect(restore(masked, tokens)).toContain('[rp aid=123 to=456-789]')
+  })
+
+  it('protects a Chatwork emoji shortcode', () => {
+    const { masked, tokens } = protect('nice (smile) work')
+    expect(tokens.length).toBe(1)
+    expect(restore(masked, tokens)).toBe('nice (smile) work')
+  })
+
+  it('does not swallow ordinary parenthetical text', () => {
+    const { masked, tokens } = protect('call me (see the note below)')
+    expect(tokens.length).toBe(0)
+    expect(restore(masked, tokens)).toBe('call me (see the note below)')
+  })
+
+  it('strips pre-existing marker chars from input so restore cannot collide', () => {
+    const dirty = 'x0y [To:9]z'
+    const { masked, tokens } = protect(dirty)
+    const round = restore(masked, tokens)
+    // the invisible PUA chars are removed; the real [To:9] survives
+    expect(round).toBe('x0y [To:9]z')
+    expect(round).not.toContain('')
+    expect(round).not.toContain('')
+  })
 })
