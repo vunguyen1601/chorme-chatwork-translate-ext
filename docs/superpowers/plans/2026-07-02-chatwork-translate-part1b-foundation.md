@@ -6,6 +6,8 @@
 
 ### Task 3: `shared/tokenizer.js` — protect CW markup (TDD)
 
+> **Scope update (post-review):** protect also covers `[rp aid=.. to=..]` reply tags (space-attribute syntax, not colon) and emoji shortcodes like `(smile)`, and strips any pre-existing U+E000/U+E001 marker chars from input first (collision-free namespace). `[rp]`/emoji patterns are best-effort for documented syntax; re-confirm and refine against the real DOM in Task 7. See `.claude/debug/tokenizer.md`.
+
 Chatwork message text contains `[To:123] Name`, `[picon:...]`, `[qt]...[/qt]`, emoji shortcodes, and URLs. Replace each with a stable placeholder `{n}` (private-use chars unlikely to be altered by translation) before translating, restore after. This is the most-tested pure unit.
 
 **Files:**
