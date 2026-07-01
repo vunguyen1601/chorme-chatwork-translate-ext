@@ -9,6 +9,15 @@
 **TDD skipped** — live-DOM UI glue; no feasible automated harness for the Chatwork SPA.
 Logic it depends on (adapter, observer, tokenizer, engine) is already unit-tested.
 
+> **Background contract notes (from Task 6 review — verify in this task):** the bg
+> `{type:TRANSLATE}` response is `{translatedText, detectedLang, error?, cached?}` where:
+> (1) `error` is a bare STRING, no code — only `console.warn` it here; don't string-match
+> for retry. (2) `detectedLang` is `null` on a cache hit — treat null as "unknown", never
+> "no language". (3) `cached` is present only on hits (`undefined` on miss, not `false`) —
+> don't assume it exists. `translateText` in this task reads only `error`+`translatedText`,
+> so all three are currently safe; re-check if you consume `detectedLang`/`cached`.
+> See `.claude/debug/background.md`.
+
 **Files:**
 - Create: `src/content/ui.js`
 - Create: `src/content/index.js`
