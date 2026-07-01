@@ -4,5 +4,6 @@
   "version": "0.1.0",
   "description": "Two-way translation inside Chatwork.",
   "permissions": ["storage"],
-  "host_permissions": ["*://*.chatwork.com/*"]
+  "host_permissions": ["*://*.chatwork.com/*"],
+  "background": { "service_worker": "src/background/service-worker.js", "type": "module" }
 }
