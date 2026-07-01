@@ -1,3 +1,6 @@
+// TtlCache: lazy eviction only (entries dropped on access after expiry). No max-size /
+// periodic sweep — fine for v1 because the MV3 service worker is short-lived and its
+// Map is discarded when the worker unloads, bounding growth naturally.
 export class TtlCache {
   constructor({ ttlMs = 3600_000, now = () => Date.now() } = {}) {
     this.ttlMs = ttlMs

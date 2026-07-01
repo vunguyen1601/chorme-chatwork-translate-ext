@@ -38,4 +38,15 @@ describe('RateLimitedQueue', () => {
     await vi.runAllTimersAsync()
     expect(starts[1] - starts[0]).toBeGreaterThanOrEqual(200)
   })
+
+  it('a rejecting job does not block the next job, and rejection reaches the caller', async () => {
+    const q = new RateLimitedQueue({ minGapMs: 100 })
+    const order = []
+    const p1 = q.push(async () => { order.push('a'); throw new Error('boom') })
+    const p2 = q.push(async () => { order.push('b'); return 2 })
+    await vi.runAllTimersAsync()
+    await expect(p1).rejects.toThrow('boom')
+    await expect(p2).resolves.toBe(2)
+    expect(order).toEqual(['a', 'b'])
+  })
 })
