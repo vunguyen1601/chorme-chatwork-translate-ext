@@ -1,0 +1,8 @@
+{
+  "manifest_version": 3,
+  "name": "Chatwork Translate",
+  "version": "0.1.0",
+  "description": "Two-way translation inside Chatwork.",
+  "permissions": ["storage"],
+  "host_permissions": ["*://*.chatwork.com/*"]
+}
