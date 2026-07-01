@@ -9,9 +9,9 @@
 
 Two responsibilities in one small module:
 - **`TtlCache`**: `get(key)` / `set(key, val)` with per-entry expiry.
-- **`RateLimitedQueue`**: runs async jobs sequentially with a minimum gap between starts; on a job throwing a "rate-limited" error it widens the gap (backoff).
+- **`RateLimitedQueue`**: runs async jobs sequentially with a **fixed** minimum gap (`minGapMs`) between job starts. A rejecting job (e.g. `translate()` throwing on 429/timeout) is isolated — it does NOT poison the chain, and the next job still runs — but the gap is NOT auto-widened. There is no built-in backoff; any 429 retry/backoff must live in the caller (Task 6) if desired.
 
-Uses injectable `now()` and `sleep()` so tests use fake timers, no real waiting.
+Uses injectable `now()` so tests use fake timers, no real waiting.
 
 **Files:**
 - Create: `src/background/cache.js`
