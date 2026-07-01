@@ -13,7 +13,9 @@ export async function translate(text, target) {
   try { body = await res.json() } catch { throw new Error('translate parse error') }
   if (!Array.isArray(body) || !Array.isArray(body[0])) throw new Error('translate parse error: unexpected shape')
 
-  const out = body[0].map((seg) => (Array.isArray(seg) ? seg[0] : '')).join('')
+  const out = body[0]
+    .map((seg) => (Array.isArray(seg) && typeof seg[0] === 'string' ? seg[0] : ''))
+    .join('')
   const detectedLang = typeof body[2] === 'string' ? body[2] : null
   return { text: out, detectedLang }
 }

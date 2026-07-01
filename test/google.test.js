@@ -39,4 +39,22 @@ describe('google translate engine', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, json: async () => ({}) })
     await expect(translate('hi', 'vi')).rejects.toThrow(/parse/i)
   })
+
+  it('treats a null inner segment as empty, not "null"', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => [[['Hello ', 'x'], [null, 'y']], null, 'ja'],
+    })
+    const r = await translate('x', 'en')
+    expect(r.text).toBe('Hello ')
+  })
+
+  it('ignores a non-string inner segment instead of coercing it', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => [[['Hello', 'x'], [1, 2, 3]], null, 'ja'],
+    })
+    const r = await translate('x', 'en')
+    expect(r.text).toBe('Hello')
+  })
 })
