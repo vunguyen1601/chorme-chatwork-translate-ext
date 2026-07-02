@@ -18,14 +18,20 @@ async function translateText(text, target) {
 }
 
 async function handleIncoming(messages) {
-  const s = await getSettings()
-  if (!s.autoTranslateIncoming) return
-  for (const m of messages) {
-    if (m.isOwn) continue
-    try {
-      const translated = await translateText(m.rawText, s.targetIncoming)
-      if (translated) renderIncoming(adapter, m.textEl, translated)
-    } catch (e) { console.warn('[cw-translate] incoming failed', e) }
+  try {
+    const s = await getSettings()
+    if (!s.autoTranslateIncoming) return
+    for (const m of messages) {
+      if (m.isOwn) continue
+      try {
+        const translated = await translateText(m.rawText, s.targetIncoming)
+        if (translated) renderIncoming(adapter, m.textEl, translated)
+      } catch (e) { console.warn('[cw-translate] incoming failed', e) }
+    }
+  } catch (e) {
+    // e.g. "Extension context invalidated" after an extension reload — swallow so the
+    // observer's un-awaited onMessages() call can never surface an unhandled rejection.
+    console.warn('[cw-translate] handleIncoming aborted', e)
   }
 }
 
@@ -56,6 +62,9 @@ function attachTo(container) {
 
 function boot() {
   let tries = 0
+  // Poll forever: this both waits for the initial container AND detects room switches
+  // (Chatwork replaces the #_timeLine node), so we intentionally never clearInterval on
+  // the success path. The give-up counter only applies before the first successful attach.
   const poll = setInterval(() => {
     const container = adapter.getMessageContainer()
     if (container && container !== watchedContainer) {
