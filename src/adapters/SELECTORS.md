@@ -1,4 +1,4 @@
-# Chatwork DOM selectors (surveyed from live DOM, room rid=433421779, 2026-07-02)
+# Chatwork DOM selectors (surveyed from live DOM, room rid=100000001, 2026-07-02)
 
 Captured via chrome-devtools against the logged-in Chatwork SPA. Fixture:
 `test/fixtures/chatwork.html` (sanitized — real text/avatars/names scrubbed, structure +
@@ -17,11 +17,11 @@ pxBmY`, etc. These **change on every Chatwork build** — NEVER select on them. 
 |---|---|---|
 | Message container (observer root) | `#_timeLine` | stable id |
 | Message row | `[data-mid]._message` | stable. `data-mid` = message id |
-| Message id (dedupe) | attribute `data-mid` | e.g. `2120714766908657664`, ordered by `data-index` |
+| Message id (dedupe) | attribute `data-mid` | e.g. `9100000000000000001`, ordered by `data-index` |
 | Deleted message | `[data-deleted="1"]` | skip these |
 | Message text | `pre` inside the row | styled class unstable → use tag `pre` |
-| Author id | `[data-aid]` inside `._speaker` (avatar) | e.g. `data-aid="11290229"` |
-| **My account id (isOwn)** | `window.MYID` (string) | e.g. `"11290229"`. isOwn = author `data-aid` === `window.MYID`. **No `_myMessage`/self CSS class exists** — must compare aids |
+| Author id | `[data-aid]` inside `._speaker` (avatar) | e.g. `data-aid="1001"` |
+| **My account id (isOwn)** | `window.MYID` (string) | e.g. `"1001"`. isOwn = author `data-aid` === `window.MYID`. **No `_myMessage`/self CSS class exists** — must compare aids |
 | Reply sub-block | `._replyMessage.chatTimeLineReply` | shares `data-mid` with parent, has NO `pre` → naturally skipped by "row must contain pre" |
 | Compose box | `#_chatText` | **`<textarea>`, NOT contenteditable** — use `.value` + dispatch `input` |
 | Compose toolbar / anchor | `#_chatSendArea` | contains `#_emoticon`, `#_to`, `#_file` buttons — anchor the Translate button here |
@@ -53,7 +53,7 @@ pxBmY`, etc. These **change on every Chatwork build** — NEVER select on them. 
    are skipped.
 
 4. **`window.MYID`** is the reliable current-user id for isOwn. Header/`AC_DATA` probes
-   returned null; `window.MYID` returned `"11290229"`. Content script can read it directly
+   returned null; `window.MYID` returned `"1001"`. Content script can read it directly
    (same page context).
 
 5. **Consecutive messages from the same author share ONE avatar** — only the first row in

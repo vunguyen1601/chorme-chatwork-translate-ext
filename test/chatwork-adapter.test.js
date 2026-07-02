@@ -10,7 +10,7 @@ const fixture = readFileSync(
 
 beforeEach(() => {
   document.body.innerHTML = fixture
-  window.MYID = '11290229'
+  window.MYID = '1001'
 })
 
 describe('chatworkAdapter', () => {
@@ -107,10 +107,10 @@ describe('chatworkAdapter', () => {
 
   it('treats a row with no [data-aid] (consecutive same-author) as not own', () => {
     const msgs = chatworkAdapter.extractMessages(document.body)
-    const noAidRow = document.querySelector('[data-mid="2120715015207268352"]')
+    const noAidRow = document.querySelector('[data-mid="9100000000000000002"]')
     expect(noAidRow).not.toBeNull()
     expect(noAidRow.querySelector('[data-aid]')).toBeNull() // confirm it has no aid
-    const m = msgs.find((x) => x.id === '2120715015207268352')
+    const m = msgs.find((x) => x.id === '9100000000000000002')
     expect(m).toBeTruthy()
     expect(m.isOwn).toBe(false)
   })
