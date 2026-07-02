@@ -48,7 +48,7 @@ describe('chatworkAdapter', () => {
     // every extracted message must have a real <pre>
     expect(extracted.every((m) => m.textEl && m.textEl.tagName === 'PRE')).toBe(true)
     // and we never extract more than the number of rows that actually contain a <pre>
-    const rowsWithPre = [...rows].filter((r) => r.matches('._message') && r.querySelector('pre'))
+    const rowsWithPre = [...rows].filter((r) => r.matches('._message') && r.querySelector('pre') && r.getAttribute('data-deleted') !== '1')
     expect(extracted.length).toBe(rowsWithPre.length)
   })
 
@@ -83,5 +83,35 @@ describe('chatworkAdapter', () => {
 
   it('finds the compose toolbar anchor', () => {
     expect(chatworkAdapter.getComposeToolbar()).not.toBeNull()
+  })
+
+  it('skips a deleted message row', () => {
+    const msgs = chatworkAdapter.extractMessages(document.body)
+    const ids = msgs.map((m) => m.id)
+    // the deleted row's data-mid must NOT appear in the extracted output
+    expect(ids).not.toContain('9000000000000000001')
+    // sanity: the deleted row really is present in the DOM and has a <pre>
+    const deletedRow = document.querySelector('[data-mid="9000000000000000001"]')
+    expect(deletedRow).not.toBeNull()
+    expect(deletedRow.querySelector('pre')).not.toBeNull()
+  })
+
+  it('does not extract a reply sub-block (no <pre>) as a message', () => {
+    const replyBlock = document.querySelector('._replyMessage')
+    expect(replyBlock).not.toBeNull()
+    const msgs = chatworkAdapter.extractMessages(document.body)
+    // every extracted message resolves to a real <pre>, and none is the reply block itself
+    expect(msgs.every((m) => m.textEl && m.textEl.tagName === 'PRE')).toBe(true)
+    expect(msgs.some((m) => m.textEl === replyBlock || replyBlock.contains(m.textEl))).toBe(false)
+  })
+
+  it('treats a row with no [data-aid] (consecutive same-author) as not own', () => {
+    const msgs = chatworkAdapter.extractMessages(document.body)
+    const noAidRow = document.querySelector('[data-mid="2120715015207268352"]')
+    expect(noAidRow).not.toBeNull()
+    expect(noAidRow.querySelector('[data-aid]')).toBeNull() // confirm it has no aid
+    const m = msgs.find((x) => x.id === '2120715015207268352')
+    expect(m).toBeTruthy()
+    expect(m.isOwn).toBe(false)
   })
 })
