@@ -5,6 +5,7 @@
   "description": "Two-way translation inside Chatwork.",
   "permissions": ["storage"],
   "host_permissions": ["*://*.chatwork.com/*"],
+  "action": { "default_popup": "src/popup/popup.html" },
   "background": { "service_worker": "src/background/service-worker.js", "type": "module" },
   "content_scripts": [
     {
