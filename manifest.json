@@ -10,9 +10,8 @@
   "content_scripts": [
     {
       "matches": ["*://*.chatwork.com/*"],
-      "js": ["src/content/index.js"],
+      "js": ["src/content/loader.js"],
       "css": ["src/content/content.css"],
-      "type": "module",
       "run_at": "document_idle"
     }
   ],
