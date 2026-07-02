@@ -56,6 +56,11 @@ plan's Task 10/11 checks plus notes surfaced during code review.
       the original; the translated block reads sensibly. NOTE: rendered emoji are `<img>`
       in the DOM, so they don't appear in the translated text line — confirm this is
       acceptable (see `src/adapters/SELECTORS.md` finding #2).
+- [ ] **Marker survival (known v1 limit):** send/receive a message with an emoji or
+      `(smile)` shortcode IN THE MIDDLE of a Japanese sentence (e.g. `本当に(smile)嬉しいです`).
+      Google may DROP the protected token on heavy reordering — the token silently
+      disappears from the translation (graceful, never corrupts). Confirm it degrades, not
+      crashes. See `.claude/debug/tokenizer.md`.
 - [ ] **Rate limit:** send/receive several messages quickly — the chat UI stays responsive,
       errors (if any) are `console.warn`, not crashes.
 - [ ] **Blank target behavior:** with a blank target somehow set, a translate attempt logs
