@@ -5,5 +5,16 @@
   "description": "Two-way translation inside Chatwork.",
   "permissions": ["storage"],
   "host_permissions": ["*://*.chatwork.com/*"],
-  "background": { "service_worker": "src/background/service-worker.js", "type": "module" }
+  "background": { "service_worker": "src/background/service-worker.js", "type": "module" },
+  "content_scripts": [
+    {
+      "matches": ["*://*.chatwork.com/*"],
+      "js": ["src/content/index.js"],
+      "type": "module",
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    { "resources": ["src/**"], "matches": ["*://*.chatwork.com/*"] }
+  ]
 }
