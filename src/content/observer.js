@@ -13,6 +13,7 @@ export class MessageWatcher {
   }
 
   start() {
+    if (this.observer) this.stop() // guard: re-start (e.g. room switch) must not orphan the old observer
     this.observer = new MutationObserver(() => this._schedule())
     this.observer.observe(this.container, { childList: true, subtree: true })
     this._schedule()
@@ -33,6 +34,9 @@ export class MessageWatcher {
     const all = this.adapter.extractMessages(this.container)
     const fresh = []
     for (const m of all) {
+      // Contract-level guard: an adapter may hand back an artifact node as textEl.
+      // For the Chatwork adapter this is always false (textEl is a <pre>); the real
+      // loop guard there is the id+text dedupe below.
       if (this.adapter.isTranslationArtifact(m.textEl)) continue
       const key = dedupeKey(m.id, m.rawText)
       if (this.seen.has(key)) continue
