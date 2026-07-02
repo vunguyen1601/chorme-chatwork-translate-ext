@@ -11,11 +11,15 @@
     {
       "matches": ["*://*.chatwork.com/*"],
       "js": ["src/content/index.js"],
+      "css": ["src/content/content.css"],
       "type": "module",
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
-    { "resources": ["src/**"], "matches": ["*://*.chatwork.com/*"] }
+    {
+      "resources": ["src/content/*.js", "src/adapters/*.js", "src/shared/*.js"],
+      "matches": ["*://*.chatwork.com/*"]
+    }
   ]
 }
