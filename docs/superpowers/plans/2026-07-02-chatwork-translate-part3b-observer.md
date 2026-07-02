@@ -9,6 +9,19 @@
 Watches the container, debounces bursts, hands new (non-artifact, non-duplicate)
 messages to a callback. Injectable adapter + `setTimeout` so it is testable.
 
+> **Notes carried from Task 8 review (address here or in Task 10):**
+> 1. **Container health-check:** `getMessageContainer()` can return `null` if Chatwork
+>    changed its DOM or the timeline hasn't rendered yet. The observer MUST handle a null
+>    container gracefully (retry/poll until present, or bail with a console warning — see
+>    design spec's "health-check"), not throw. Chatwork is an SPA: the container may appear
+>    after initial load and be replaced on room switch, so re-attach logic is needed.
+> 2. **`mountIncomingTranslation` fragility to re-render:** the adapter's idempotency check
+>    only inspects `textEl.nextElementSibling`. If Chatwork re-renders a row after we mount
+>    (React/styled-components), our block can be orphaned and a re-process would duplicate it.
+>    The observer's dedupe (by message id + text hash) is the primary guard against
+>    re-translating; ensure a re-rendered row that reappears is treated as already-seen
+>    (same id+text → skipped) so we don't double-mount. Verify in Task 10 manual testing.
+
 **Files:**
 - Create: `src/content/observer.js`
 - Test: `test/observer.test.js`
