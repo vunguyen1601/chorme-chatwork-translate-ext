@@ -44,6 +44,7 @@ function bootCompose() {
       const translated = await translateText(raw, s.targetOutgoing)
       showComposePreview(translated, {
         onApply: (finalText) => adapter.setComposeText(finalText),
+        anchorEl: adapter.getComposeElement(),
       })
     } catch (e) { console.warn('[cw-translate] outgoing failed', e) }
   })

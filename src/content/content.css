@@ -1,4 +1,7 @@
-/* Styles for elements the extension injects into Chatwork. Scoped by cw-* classes. */
+/* Styles for elements the extension injects into Chatwork. Scoped by cw-* classes.
+   The button aims to read as native Chatwork chrome: quiet ghost by default,
+   only asserting itself on hover/focus. */
+
 .cw-translation {
   margin: 2px 0 6px;
   padding: 4px 8px;
@@ -11,18 +14,44 @@
   word-break: break-word;
 }
 
+/* ---- Outgoing "Dịch" button: ghost that blends into the send toolbar ---- */
 .cw-translate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   margin: 0 4px;
-  padding: 2px 10px;
-  font-size: 12px;
-  color: #fff;
-  background: #2f80ed;
-  border: none;
-  border-radius: 4px;
+  padding: 4px 10px;
+  font: 500 12px/1 system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #5c6470;
+  background: transparent;
+  border: 1px solid rgba(92, 100, 112, 0.28);
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
 }
-.cw-translate-btn:hover { background: #1c66d6; }
+.cw-translate-btn:hover {
+  color: #1c66d6;
+  background: rgba(47, 128, 237, 0.08);
+  border-color: rgba(47, 128, 237, 0.45);
+}
+.cw-translate-btn:active {
+  background: rgba(47, 128, 237, 0.16);
+}
+.cw-translate-btn:focus-visible {
+  outline: 2px solid #2f80ed;
+  outline-offset: 1px;
+}
+.cw-translate-btn__icon {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  opacity: 0.85;
+}
+.cw-translate-btn__label {
+  white-space: nowrap;
+}
 
+/* ---- Outgoing translation preview popover ---- */
 .cw-translate-preview {
   position: fixed;
   right: 16px;
@@ -30,25 +59,124 @@
   z-index: 2147483647;
   width: 320px;
   max-width: calc(100vw - 32px);
-  padding: 10px;
+  padding: 12px;
   background: #fff;
-  border: 1px solid #d0d0d0;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-  font: 13px system-ui;
+  border: 1px solid #e2e5ea;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.18);
+  font: 13px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #1f2430;
+  animation: cw-preview-in 140ms ease;
 }
-.cw-translate-preview textarea {
-  width: 100%;
-  min-height: 72px;
+/* When docked, JS sets left/bottom/width; drop the corner defaults. */
+.cw-translate-preview--docked {
+  right: auto;
+}
+
+.cw-translate-preview__head {
+  display: flex;
+  align-items: center;
   margin-bottom: 8px;
-  padding: 6px;
+}
+.cw-translate-preview__title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a919e;
+}
+
+.cw-translate-preview__text {
+  width: 100%;
+  min-height: 76px;
+  padding: 8px;
   box-sizing: border-box;
   font: inherit;
+  color: inherit;
+  background: #f7f8fa;
+  border: 1px solid #e2e5ea;
+  border-radius: 6px;
   resize: vertical;
 }
-.cw-translate-preview button {
-  margin-right: 6px;
-  padding: 4px 12px;
-  font: inherit;
+.cw-translate-preview__text:focus {
+  outline: none;
+  border-color: #2f80ed;
+  background: #fff;
+}
+
+.cw-translate-preview__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+.cw-translate-preview__btn {
+  padding: 6px 14px;
+  font: 500 13px/1 system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #5c6470;
+  background: #fff;
+  border: 1px solid #d4d8df;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.cw-translate-preview__btn:hover {
+  background: #f2f4f7;
+}
+.cw-translate-preview__btn:focus-visible {
+  outline: 2px solid #2f80ed;
+  outline-offset: 1px;
+}
+.cw-translate-preview__btn--primary {
+  color: #fff;
+  background: #2f80ed;
+  border-color: #2f80ed;
+}
+.cw-translate-preview__btn--primary:hover {
+  background: #1c66d6;
+  border-color: #1c66d6;
+}
+
+@keyframes cw-preview-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Dark mode: Chatwork ships a dark theme; match it ---- */
+@media (prefers-color-scheme: dark) {
+  .cw-translation {
+    color: #d7dae0;
+    background: rgba(47, 128, 237, 0.12);
+  }
+  .cw-translate-btn {
+    color: #aab1bd;
+    border-color: rgba(170, 177, 189, 0.3);
+  }
+  .cw-translate-btn:hover {
+    color: #6ba4f5;
+    background: rgba(47, 128, 237, 0.16);
+    border-color: rgba(107, 164, 245, 0.5);
+  }
+  .cw-translate-preview {
+    background: #23272e;
+    border-color: #363b44;
+    color: #e5e8ec;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  }
+  .cw-translate-preview__text {
+    background: #1b1f25;
+    border-color: #363b44;
+  }
+  .cw-translate-preview__text:focus { background: #1b1f25; }
+  .cw-translate-preview__btn {
+    color: #cbd0d8;
+    background: #2b3037;
+    border-color: #3c424b;
+  }
+  .cw-translate-preview__btn:hover { background: #333941; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-translate-preview { animation: none; }
+  .cw-translate-btn { transition: none; }
 }
