@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "package": "rm -f chatwork-translate-*.zip && zip -r \"chatwork-translate-$npm_package_version.zip\" manifest.json icons src -x '*.DS_Store' 'src/adapters/SELECTORS.md'"
   },
   "devDependencies": {
     "vitest": "^2.1.0",
